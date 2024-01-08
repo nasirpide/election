@@ -3,10 +3,11 @@
 *Date created: 			12/12 2023
 *Creator:				Sohaib Jalal
 ********************************************************************************
-	global data "/Users/drnasiriqbal/Library/CloudStorage/Dropbox/Election/data"
+	*global data "/Users/drnasiriqbal/Library/CloudStorage/Dropbox/Election/data"
+	do "C:\Users\Administrator\Documents\GitHub\election\Master.do"
 ********************************************************************************
 **Read Survey Data
-	use "$data/surveydata.dta", clear 
+	use "$data", clear 
 	
 **************************
 *CLEANING
@@ -199,9 +200,38 @@
                 subtitle("by regions of the United States")
                 note("Source: U.S. Census Bureau, U.S. Dept. of Commerce")
 
-	
+********************************************************************************
+****Analysis for brief 2: Social media role in politics
+********************************************************************************	
+
+	rename (K3__1 K3__2 K3__3 K3__4 K3__5 K3__6 K3__7 K3__8 K3__9) (Facebook X Instagram Whatsapp TikTok YouTube Snapchat Telegram Linkedin)
+
+	tab T1
+	replace T1=4 if T1==3 | T1==5     // we have options (Never, rarely, occasionally, frequently, always) replacing occasionally & always with "Frequently" now options are (Never , rarely , frequently)
+	replace T2=4 if T2==3 | T2==5 
+	replace T3=4 if T3==3 | T3==5
+	replace T4=4 if T4==3 | T4==5
+	replace T5=4 if T5==3 | T5==5
+
+	replace X11= 3 if X11==2    // we have options (No change, slight change, moderate change, significant change, complete change ) replacing slight change with "moderate change" & significant change with "complete change"
+	replace X11= 5 if X11==4
+
+replace X1 =3 if X1==2    // replacing to a small extent with "to a modrate extent" & to a large extent with "Extremely"
+replace X1=5 if X1==4
+
+
+replace X2= 3 if X2==2  // replacing slightly/somewhat with "moderately" & very/significant with Extremely . using same otions for X2 and X3
+replace X2= 5 if X2==4  // X2 has 362 obs, 1 obs has .a
+
+replace X3= 3 if X3==2 
+replace X3= 5 if X3==4 
+
+replace X4= 3 if X4==2
+replace X4=5 if X4==4
+
 	
 /*
+
 **SOCIAL MEDIA AND POLITICS**
 
 *usage_Political news
