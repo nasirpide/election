@@ -3,11 +3,11 @@
 *Date created: 			12/12 2023
 *Creator:				Sohaib Jalal
 ********************************************************************************
-	*global data "/Users/drnasiriqbal/Library/CloudStorage/Dropbox/Election/data"
+	global data "/Users/drnasiriqbal/Library/CloudStorage/Dropbox/Election/data"
 	do "C:\Users\Administrator\Documents\GitHub\election\Master.do"
 ********************************************************************************
 **Read Survey Data
-	use "$data", clear 
+	use "$data/surveydata.dta", clear 
 	
 **************************
 *CLEANING
@@ -183,29 +183,41 @@
 	tab VOTE_CANDIDATE EDU_CAT, nofre col
 	tab VOTE_PARTY EDU_CAT, nofre col
 	
-	
-	
-*** No major difference across demographic in intend to vote
-
-
-
-
-
-
-	
-	 graph bar (mean) tempjuly tempjan, over(region)
-                legend( label(1 "July") label(2 "January") )
-                ytitle("Degrees Fahrenheit")
-                title("Average July and January temperatures")
-                subtitle("by regions of the United States")
-                note("Source: U.S. Census Bureau, U.S. Dept. of Commerce")
 
 ********************************************************************************
 ****Analysis for brief 2: Social media role in politics
 ********************************************************************************	
+	genl SOCIAL_MEDIA=(K1==1), label(Social Media)
+	
+	foreach var in 1 2 3 4 5 6 7 8 9 999{
+	replace K3__`var'=0 if K3__`var'==.a|K3__`var'==.&SOCIAL_MEDIA==1 //cross check and replace . & .a as no response 
+}
+	rename 	(K3__1 K3__2 K3__3 K3__4 K3__5 K3__6 K3__7 K3__8 K3__9 K3__999) ///
+			(Facebook X Instagram Whatsapp TikTok YouTube Snapchat Telegram Linkedin Others)
+	label variable Facebook "Facebook"
+	label variable X "X(Twitter)"
+	label variable Instagram "Instagram"
+	label variable Whatsapp "Whatsapp"
+	label variable TikTok "TikTok"
+	label variable YouTube "YouTube"
+	label variable Others "Others"
+	replace Others=1 if Snapchat==1|Telegram==1|Linkedin==1 //Combine small catgories in others [(30 real changes made)]
 
-	rename (K3__1 K3__2 K3__3 K3__4 K3__5 K3__6 K3__7 K3__8 K3__9) (Facebook X Instagram Whatsapp TikTok YouTube Snapchat Telegram Linkedin)
+********Use of any kind of soical media by age_cat
 
+	graph hbar SOCIAL_MEDIA, by(AGE_CAT)
+	
+	
+	
+	
+	
+	
+	 mrgraph bar Facebook X Instagram Whatsapp TikTok YouTube Others, include response(1) sort width(5) title(Use of different social media tools) ylabel(,angle(0))
+	
+	
+	mrgraph bar Facebook X Instagram Whatsapp TikTok YouTube Others, include response( 1) sort width(16) stat(column) by(AGE_CAT) rtotal title(Criminal experiences (as a victim))
+	
+	
 	tab T1
 	replace T1=4 if T1==3 | T1==5     // we have options (Never, rarely, occasionally, frequently, always) replacing occasionally & always with "Frequently" now options are (Never , rarely , frequently)
 	replace T2=4 if T2==3 | T2==5 
@@ -276,16 +288,7 @@ genl create_content=(K7__6==1), label (type of engagement: create content)
 genl ignore=(K7__7==1), label (type of engagement: ignore) 
 
 *************************************************************************************
-//Analysis
-**Age categories
-gen Age_bracket=1 if D0 >= 18 & D0 <= 29
-replace Age_bracket=2 if D0 >=30 & D0<=50
-replace Age_bracket=3 if D0 >=51
-label define Age_bracket_lbl 1"Youth" 2"Middle Age" 3"Old Age"
-label values Age_bracket Age_bracket_lbl
 
-**age graph
-graph pie, over(Age_bracket) plabel(_all percent)
 
 **Education: merged: primary&lessthan primary, seconrdy&matric, PHD&Masters
 replace D5=3 if D5==2
@@ -305,3 +308,19 @@ graph pie, over(A3) plabel(_all percent)
 
 graph pie, over(A4) plabel(_all percent)
 graph pie, over(s58) plabel(_all percent, size(vsmall) orientation(vertical) format(%4.0g)) legend(cols(3) size(vsmall))
+
+
+
+
+
+
+
+
+	
+	 graph bar (mean) tempjuly tempjan, over(region)
+                legend( label(1 "July") label(2 "January") )
+                ytitle("Degrees Fahrenheit")
+                title("Average July and January temperatures")
+                subtitle("by regions of the United States")
+                note("Source: U.S. Census Bureau, U.S. Dept. of Commerce")
+		*/
