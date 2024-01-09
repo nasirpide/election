@@ -206,6 +206,8 @@
 
 	rename (K3__1 K3__2 K3__3 K3__4 K3__5 K3__6 K3__7 K3__8 K3__9) (Facebook X Instagram Whatsapp TikTok YouTube Snapchat Telegram Linkedin)
 
+rename (K5 K5_1 K5_2 K5_3 K5_4 K5_5) (Facebook_use X_use Instagram_use Whatsapp_use TikTok_use YouTube_use)
+
 	tab T1
 	replace T1=4 if T1==3 | T1==5     // we have options (Never, rarely, occasionally, frequently, always) replacing occasionally & always with "Frequently" now options are (Never , rarely , frequently)
 	replace T2=4 if T2==3 | T2==5 
@@ -229,6 +231,11 @@ replace X3= 5 if X3==4
 replace X4= 3 if X4==2
 replace X4=5 if X4==4
 
+
+	
+	
+	
+	
 	
 /*
 
