@@ -30,8 +30,12 @@ if $user == 2 {
 
 ********************************************************************************
 *project folder globals
-	global data			 		"$dropbox/data/surveydata.dta" 
+	global data			 		"$dropbox/data" 
 	global res 					"$dropbox/results"
 
 	
-	
+*******packhages installed 
+
+	ssc install dataex, replace 
+	ssc install myaxis, replace
+ 
