@@ -167,7 +167,7 @@
 	label define emp_cat 1 "Employeed" 2 "Business" 3 "Students" 4 "Labor/Others"
 	label values EMP_CAT emp_cat
 
-
+/*
 ********************************************************************************
 ****Analysis for brief 1: Perception and intention 
 ********************************************************************************
@@ -183,36 +183,50 @@
 	tab VOTE_CANDIDATE EDU_CAT, nofre col
 	tab VOTE_PARTY EDU_CAT, nofre col
 	
-
+*/
 ********************************************************************************
 ****Analysis for brief 2: Social media role in politics
 ********************************************************************************	
 	genl SOCIAL_MEDIA=(K1==1), label(Social Media)
-	
+	drop K1
 	foreach var in 1 2 3 4 5 6 7 8 9 999{
 	replace K3__`var'=0 if K3__`var'==.a|K3__`var'==.&SOCIAL_MEDIA==1 //cross check and replace . & .a as no response 
 }
 	rename 	(K3__1 K3__2 K3__3 K3__4 K3__5 K3__6 K3__7 K3__8 K3__9 K3__999) ///
-			(Facebook X Instagram Whatsapp TikTok YouTube Snapchat Telegram Linkedin Others)
-	label variable Facebook "Facebook"
-	label variable X "X(Twitter)"
-	label variable Instagram "Instagram"
-	label variable Whatsapp "Whatsapp"
-	label variable TikTok "TikTok"
-	label variable YouTube "YouTube"
-	label variable Others "Others"
-	replace Others=1 if Snapchat==1|Telegram==1|Linkedin==1 //Combine small catgories in others [(30 real changes made)]
+			(Facebook TwitterX Instagram Whatsapp TikTok YouTube Snapchat Telegram Linkedin OthersSM)
+	replace OthersSM=1 if Snapchat==1|Telegram==1|Linkedin==1 //Combine small catgories in others [(30 real changes made)]
+	drop Snapchat Telegram Linkedin
+	
+	foreach v of varlist Facebook TwitterX Instagram Whatsapp TikTok YouTube OthersSM{
+	label variable `v' "Social Media Platform: `v'"
+}
 
-********Use of any kind of soical media by age_cat
+	rename (K6__1 K6__2 K6__3 K6__4 K6__5 K6__6 K6__7 K6__8 K6__9) ///
+			(Text Podcasts Infographics Video Audio Articles LiveStreaming UserGenerated OthersMeans)
+	replace OthersMeans=1 if Infographics==1|Audio==1|UserGenerated==1
+	drop Infographics Audio UserGenerated
+			
+	foreach v of varlist Text Podcasts Video Articles LiveStreaming OthersMeans{
+	label variable `v' "Source to obtain political information/news: `v'"
+}
 
-	graph hbar SOCIAL_MEDIA, by(AGE_CAT)
+	rename 	(K7__1 K7__2 K7__3 K7__4 K7__5 K7__6 K7__7) ///
+			(Like Share Read Comment Participate CreateContent OthersWays)   
+	replace OthersWays=1 if Participate==1|CreateContent==1
+	drop Participate CreateContent
+	
+	foreach v of varlist Like Share Read Comment OthersWays{
+	label variable `v' "Ways to engage with political information on SM: `v'"
+}
+
+
+********Use of any kind of soical media by age_cat	
+	graph bar (mean) SOCIAL_MEDIA,	over(AGE_CAT) ytitle("Percentage")
 	
 	
 	
 	
-	
-	
-	 mrgraph bar Facebook X Instagram Whatsapp TikTok YouTube Others, include response(1) sort width(5) title(Use of different social media tools) ylabel(,angle(0))
+	 mrgraph bar Facebook X Instagram Whatsapp TikTok YouTube Others, by(AGE_CAT) include response(1) sort width(5) title(Use of different social media plateform (multiple)) ylabel(,angle(0))
 	
 	
 	mrgraph bar Facebook X Instagram Whatsapp TikTok YouTube Others, include response( 1) sort width(16) stat(column) by(AGE_CAT) rtotal title(Criminal experiences (as a victim))
