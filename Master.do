@@ -30,7 +30,7 @@ if $user == 2 {
 
 ********************************************************************************
 *project folder globals
-	global data			 		"$dropbox/data" 
+	global data			 		"$dropbox/data/surveydata.dta" 
 	global res 					"$dropbox/results"
 
 	

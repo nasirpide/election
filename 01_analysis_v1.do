@@ -3,12 +3,12 @@
 *Date created: 			12/12 2023
 *Creator:				Sohaib Jalal
 ********************************************************************************
-	global data "/Users/drnasiriqbal/Library/CloudStorage/Dropbox/Election/data"
+	*global data "/Users/drnasiriqbal/Library/CloudStorage/Dropbox/Election/data"
 	do "C:\Users\Administrator\Documents\GitHub\election\Master.do"
 ********************************************************************************
 **Read Survey Data
-	use "$data/surveydata.dta", clear 
-	
+	*use "$data/surveydata.dta", clear 
+		use "$data", clear
 **************************
 *CLEANING
 ***************************
@@ -190,7 +190,7 @@
 	genl SOCIAL_MEDIA=(K1==1), label(Social Media)
 	drop K1
 	foreach var in 1 2 3 4 5 6 7 8 9 999{
-	replace K3__`var'=0 if K3__`var'==.a|K3__`var'==.&SOCIAL_MEDIA==1 //cross check and replace . & .a as no response 
+	replace K3__`var'=0 if K3__`var'==.a | K3__`var'==. & SOCIAL_MEDIA==1 //cross check and replace . & .a as no response 
 }
 	rename 	(K3__1 K3__2 K3__3 K3__4 K3__5 K3__6 K3__7 K3__8 K3__9 K3__999) ///
 			(Facebook TwitterX Instagram Whatsapp TikTok YouTube Snapchat Telegram Linkedin OthersSM)
@@ -210,13 +210,11 @@
 	label variable `v' "Source to obtain political information/news: `v'"
 }
 
-<<<<<<< HEAD
 rename (K5 K5_1 K5_2 K5_3 K5_4 K5_5) (Facebook_use X_use Instagram_use Whatsapp_use TikTok_use YouTube_use)
 
-=======
 	rename 	(K7__1 K7__2 K7__3 K7__4 K7__5 K7__6 K7__7) ///
 			(Like Share Read Comment Participate CreateContent OthersWays)   
-	replace OthersWays=1 if Participate==1|CreateContent==1
+	replace OthersWays=1 if Participate==1 | CreateContent==1
 	drop Participate CreateContent
 	
 	foreach v of varlist Like Share Read Comment OthersWays{
@@ -228,16 +226,202 @@ rename (K5 K5_1 K5_2 K5_3 K5_4 K5_5) (Facebook_use X_use Instagram_use Whatsapp_
 	graph bar (mean) SOCIAL_MEDIA,	over(AGE_CAT) ytitle("Percentage")
 	
 	
-	
-	
-	 mrgraph bar Facebook X Instagram Whatsapp TikTok YouTube Others, by(AGE_CAT) include response(1) sort width(5) title(Use of different social media plateform (multiple)) ylabel(,angle(0))
-	
+	 graph bar Facebook TwitterX Instagram Whatsapp TikTok YouTube Others, by(AGE_CAT) include response(1) sort width(5) title(Use of different social media plateform (multiple)) ylabel(,angle(0))
 	
 	mrgraph bar Facebook X Instagram Whatsapp TikTok YouTube Others, include response( 1) sort width(16) stat(column) by(AGE_CAT) rtotal title(Criminal experiences (as a victim))
 	
+**********generating outcome variables(Dummies)
+	*political stability
+	label define dummy 1 "Yes" 0 "No"
 	
->>>>>>> 72cf5408b22a5919a87da3bb12d394f9d9efd56d
-	tab T1
+	gen PS_2024=1 if s62==1
+	replace PS_2024=0 if s62==2 | s62==3 | s62==4
+
+	label variable PS_2024 "2024 elections will bring political stability"
+	label values PS_2024 dummy
+	*Economic conditions
+	gen EC_2024=1 if s63==1
+	replace EC_2024=0 if s63==2 | s63==3 | s63==4
+
+	label variable EC_2024 "2024 elections will Improve Economic conditions"
+	label values EC_2024 dummy
+	
+	*Fair & transparent elections
+	gen FairElection_2024=1 if s64==1
+	replace FairElection_2024=0 if s64==2 | s64==3 | s64==4
+
+	label variable FairElection_2024 "2024 elections will Fair & transparent"
+	label values FairElection_2024 dummy
+	
+	*share post on social media
+	gen share_post=0 if T1==1
+	replace share_post=1 if T1==2 | T1==3 | T1==4 | T1==5
+	
+	label variable share_post "share post on social media about politics"
+	label values share_post dummy 
+	
+	*promote political party
+	gen Promote_PP=0 if T2==1
+	replace Promote_PP=1 if T2==2 | T2==3 | T2==4 | T2==5
+	
+	label variable Promote_PP "Promote any political party on social media"
+	label values Promote_PP dummy
+	
+	*Promote political candidate 
+	gen Promote_PC=0 if T3==1
+	replace Promote_PC=1 if T3==2 | T3==3 | T3==4 | T3==5
+	
+	label variable Promote_PC "Promote any political candidate on social media"
+	label values Promote_PC dummy
+	
+	*attend online political events/jalsas
+	
+	gen OnlineEvent=0 if T4==1
+	replace OnlineEvent=1 if T4==2 | T4==3 | T4==4 | T4==5
+	
+	label variable OnlineEvent "Attend online political event"
+	label values OnlineEvent dummy
+	
+	*political discussion and debate 
+	gen PoliticalDebate=0 if T5==1
+	replace PoliticalDebate=1 if T5==2 | T5==3 | T5==4 | T5==5
+	
+	label variable PoliticalDebate "Engage in political debate on social media"
+	label values PoliticalDebate dummy
+	
+	*social media influence political engagements
+	gen Influence_PE=0 if X1==1
+	replace Influence_PE=1 if X1==2 | X1==3 | X1==4 | X1==5
+	
+	label variable Influence_PE "social media influence your political engagements"
+	label values Influence_PE dummy
+	
+	*change support
+	gen ChangeSupport=0 if X11==1
+	replace ChangeSupport=1 if X11==2 | X11==3 | X11==4 | X11==5
+	
+	label variable ChangeSupport "changed political support due to social media"
+	label values ChangeSupport dummy
+	
+	*choosing better voting candidate
+	gen Better_VC=0 if X2==1
+	replace Better_VC=1 if X2==2 | X2==3 | X2==4 | X2==5
+	
+	label variable Better_VC "social media helps choosing better voting candidate"
+	label values Better_VC dummy
+	
+	*increased political awarness
+	gen Awarness=0 if X3==1
+	replace Awarness=1 if X3==2 | X3==3 | X3==4 | X3==5
+	
+	label variable Awarness "social media increased political awarness"
+	label values Awarness dummy
+	
+	*chances of winning elections
+	gen ElectionWinners=0 if X5==2 | X5==3
+	replace ElectionWinners=1 if X5==1 
+	
+	label variable ElectionWinners "party who are more active on social media will win elections"
+	label values ElectionWinners dummy
+	
+	*political polarization
+	gen Polarization=0 if X6==3 | X6==4 | X6==5
+	replace Polarization=1 if X6==1 | X6==2
+	
+	label variable Polarization "Social media contribute to political polarization"
+	label values Polarization dummy
+	
+	*Reliable source of political information
+	tab J3, gen(J3)
+	rename A3 REGION
+
+	*****************************
+	****explanatory variables
+	*****************************
+	*Trust vs No Trust
+	gen News_trust=0 if J1==1  
+	replace News_trust=1 if J1==2 | J1==3 | J1==4 | J1==5
+	
+	label variable News_trust "Trust on political information come across on Social media"
+	label values News_trust dummy
+
+	*Social media vs Traditional media
+	
+	
+	
+**************************************************
+*******Logistic Analyis
+**************************************************
+
+***Regression Models
+
+	global COVS "AGE_CAT EDU_CAT EMP_CAT REGION"	
+	
+	logistic VOTE2024 SOCIAL_MEDIA
+	logistic VOTE2024 SOCIAL_MEDIA REGION
+	logistic VOTE2024 SOCIAL_MEDIA i.AGE_CAT i.EDU_CAT i.EMP_CAT
+	logistic VOTE2024 SOCIAL_MEDIA i.AGE_CAT i.EDU_CAT i.EMP_CAT REGION
+/*	
+logistic VOTE2024 SOCIAL_MEDIA i.AGE_CAT i.EDU_CAT i.EMP_CAT REGION if GENDER==1
+logistic VOTE2024 SOCIAL_MEDIA if GENDER==0
+logistic VOTE2024 SOCIAL_MEDIA if GENDER==1
+*/
+*Age
+		logistic VOTE2024 SOCIAL_MEDIA if AGE_CAT==1
+		logistic VOTE2024 SOCIAL_MEDIA if AGE_CAT==2
+		logistic VOTE2024 SOCIAL_MEDIA if AGE_CAT==3
+		logistic VOTE2024 SOCIAL_MEDIA if AGE_CAT==4
+*Education		
+		logistic VOTE2024 SOCIAL_MEDIA if EDU_CAT==1
+		logistic VOTE2024 SOCIAL_MEDIA if EDU_CAT==2
+		logistic VOTE2024 SOCIAL_MEDIA if EDU_CAT==3
+		logistic VOTE2024 SOCIAL_MEDIA if EDU_CAT==4
+*Employment
+		logistic VOTE2024 SOCIAL_MEDIA if EMP_CAT==1
+		logistic VOTE2024 SOCIAL_MEDIA if EMP_CAT==2
+		logistic VOTE2024 SOCIAL_MEDIA if EMP_CAT==3
+		logistic VOTE2024 SOCIAL_MEDIA if EMP_CAT==4
+*Region
+		logistic VOTE2024 SOCIAL_MEDIA if REGION==1
+		logistic VOTE2024 SOCIAL_MEDIA if REGION==2
+		
+*Social media platforms		
+		logistic VOTE2024 Facebook 
+		logistic VOTE2024 TwitterX  
+		logistic VOTE2024 Instagram 
+		logistic VOTE2024 Whatsapp 
+		logistic VOTE2024 TikTok 
+		logistic VOTE2024 YouTube
+
+	
+	
+	
+	logistic VOTE2024 SOCIAL_MEDIA#i.AGE_CAT
+	logistic VOTE2024 SOCIAL_MEDIA#i.EMP_CAT
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+/*
+
+Facebook_use X_use Instagram_use Whatsapp_use TikTok_u	tab T1
 	replace T1=4 if T1==3 | T1==5     // we have options (Never, rarely, occasionally, frequently, always) replacing occasionally & always with "Frequently" now options are (Never , rarely , frequently)
 	replace T2=4 if T2==3 | T2==5 
 	replace T3=4 if T3==3 | T3==5
@@ -259,7 +443,7 @@ replace X3= 5 if X3==4
 
 replace X4= 3 if X4==2
 replace X4=5 if X4==4
-
+*/
 
 	
 	
