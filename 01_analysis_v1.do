@@ -375,8 +375,7 @@ label values Users user_l
 	replace Voting_B = 3 if (VOTED2018==1 & VOTE2024==0) // yes , no
 	replace Voting_B = 4 if (VOTED2018==0 & VOTE2024==0) // no, n0
 	
-	gen Party = 0 if s51==1 & PARTY_VOTE==1 | s51==2 & PARTY_VOTE==2 | s51==3 & PARTY_VOTE==3 | s51==4 & PARTY_VOTE==4 | s51==5 & PARTY_VOTE==5 | s51==6 & PARTY_VOTE==6 | s51==7 & PARTY_VOTE==7 | s51==8 & PARTY_VOTE==8 | s51==9 & PARTY_VOTE==9 | s51==10 & PARTY_VOTE==10 | s51==11 & PARTY_VOTE==11  | s51==12 & PARTY_VOTE==12 | s51==999 & PARTY_VOTE==999 // same party 
-	replace Party = 1 if s51==1 & PARTY_VOTE!=1 | s51==2 & PARTY_VOTE!=2 | s51==3 & PARTY_VOTE!=3 | s51==4 & PARTY_VOTE!=4 | s51==5 & PARTY_VOTE!=5 | s51==6 & PARTY_VOTE!=6 | s51==7 & PARTY_VOTE!=7 | s51==8 & PARTY_VOTE!=8 | s51==9 & PARTY_VOTE!=9 | s51==10 & PARTY_VOTE!=10 | s51==11 & PARTY_VOTE!=11  | s51==12 & PARTY_VOTE!=12 | s51==999 & PARTY_VOTE!=999 // changed party 
+	gen Change_party=(s52==PARTY_VOTE) // 0 "changed party" 1 "No change"
 	
 	
 	
@@ -388,16 +387,15 @@ label values Users user_l
 ***Regression Models
 
 	global COVS "AGE_CAT EDU_CAT EMP_CAT REGION"	
-	
-	logistic VOTE2024 SOCIAL_MEDIA
-	logistic VOTE2024 SOCIAL_MEDIA REGION
-	logistic VOTE2024 SOCIAL_MEDIA i.AGE_CAT i.EDU_CAT i.EMP_CAT
-	logistic VOTE2024 SOCIAL_MEDIA i.AGE_CAT i.EDU_CAT i.EMP_CAT REGION
-/*	
-logistic VOTE2024 SOCIAL_MEDIA i.AGE_CAT i.EDU_CAT i.EMP_CAT REGION if GENDER==1
-logistic VOTE2024 SOCIAL_MEDIA if GENDER==0
-logistic VOTE2024 SOCIAL_MEDIA if GENDER==1
-*/
+
+*******************
+	***Vote2024
+*******************
+		logistic VOTE2024 SOCIAL_MEDIA
+		logistic VOTE2024 SOCIAL_MEDIA REGION
+		logistic VOTE2024 SOCIAL_MEDIA i.AGE_CAT i.EDU_CAT i.EMP_CAT
+		logistic VOTE2024 SOCIAL_MEDIA i.AGE_CAT i.EDU_CAT i.EMP_CAT REGION
+
 *Age
 		logistic VOTE2024 SOCIAL_MEDIA if AGE_CAT==1
 		logistic VOTE2024 SOCIAL_MEDIA if AGE_CAT==2
@@ -425,32 +423,75 @@ logistic VOTE2024 SOCIAL_MEDIA if GENDER==1
 		logistic VOTE2024 TikTok 
 		logistic VOTE2024 YouTube
 
+		logistic VOTE2024 News_trust
+		logistic VOTE2024 REGION News_trust
+		logistic VOTE2024 i.AGE_CAT i.EDU_CAT i.EMP_CAT News_trust
+		logistic VOTE2024 i.AGE_CAT i.EDU_CAT i.EMP_CAT REGION News_trust
+		
+		logistic VOTE2024 Reliable_source
+		logistic VOTE2024 REGION Reliable_source
+		logistic VOTE2024 i.AGE_CAT i.EDU_CAT i.EMP_CAT Reliable_source
+		logistic VOTE2024 i.AGE_CAT i.EDU_CAT i.EMP_CAT REGION Reliable_source
+		
+		logistic VOTE2024 Users
+		logistic VOTE2024 REGION Users
+		logistic VOTE2024 i.AGE_CAT i.EDU_CAT i.EMP_CAT Users
+		logistic VOTE2024 i.AGE_CAT i.EDU_CAT i.EMP_CAT REGION Users
+
+*******************************
+	** Change voting behaviour
+*******************************
+	
+		logistic Change_party SOCIAL_MEDIA
+		logistic Change_party SOCIAL_MEDIA REGION
+		logistic Change_party SOCIAL_MEDIA i.AGE_CAT i.EDU_CAT i.EMP_CAT
+		logistic Change_party SOCIAL_MEDIA i.AGE_CAT i.EDU_CAT i.EMP_CAT REGION
+
+*Age
+		logistic Change_party SOCIAL_MEDIA if AGE_CAT==1
+		logistic Change_party SOCIAL_MEDIA if AGE_CAT==2
+		logistic Change_party SOCIAL_MEDIA if AGE_CAT==3
+		logistic Change_party SOCIAL_MEDIA if AGE_CAT==4
+*Education		
+		logistic Change_party SOCIAL_MEDIA if EDU_CAT==1
+		logistic Change_party SOCIAL_MEDIA if EDU_CAT==2
+		logistic Change_party SOCIAL_MEDIA if EDU_CAT==3
+		logistic Change_party SOCIAL_MEDIA if EDU_CAT==4
+*Employment
+		logistic Change_party SOCIAL_MEDIA if EMP_CAT==1
+		logistic Change_party SOCIAL_MEDIA if EMP_CAT==2
+		logistic Change_party SOCIAL_MEDIA if EMP_CAT==3
+		logistic Change_party SOCIAL_MEDIA if EMP_CAT==4
+*Region
+		logistic VOTE2024 SOCIAL_MEDIA if REGION==1
+		logistic VOTE2024 SOCIAL_MEDIA if REGION==2
+		
+*Social media platforms		
+		logistic Change_party Facebook 
+		logistic Change_party TwitterX  
+		logistic Change_party Instagram 
+		logistic Change_party Whatsapp 
+		logistic Change_party TikTok 
+		logistic Change_party YouTube
+
+		logistic Change_party News_trust
+		logistic Change_party REGION News_trust
+		logistic Change_party i.AGE_CAT i.EDU_CAT i.EMP_CAT News_trust
+		logistic Change_party i.AGE_CAT i.EDU_CAT i.EMP_CAT REGION News_trust
+		
+		logistic Change_party Reliable_source
+		logistic Change_party REGION Reliable_source
+		logistic Change_party i.AGE_CAT i.EDU_CAT i.EMP_CAT Reliable_source
+		logistic Change_party i.AGE_CAT i.EDU_CAT i.EMP_CAT REGION Reliable_source
+		
+		logistic Change_party Users
+		logistic Change_party REGION Users
+		logistic Change_party i.AGE_CAT i.EDU_CAT i.EMP_CAT Users
+		logistic Change_party i.AGE_CAT i.EDU_CAT i.EMP_CAT REGION Users
 	
 	
 	
-	logistic VOTE2024 SOCIAL_MEDIA#i.AGE_CAT
-	logistic VOTE2024 SOCIAL_MEDIA#i.EMP_CAT
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 /*
 
 Facebook_use X_use Instagram_use Whatsapp_use TikTok_u	tab T1
