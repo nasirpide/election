@@ -346,9 +346,41 @@ rename (K5 K5_1 K5_2 K5_3 K5_4 K5_5) (Facebook_use X_use Instagram_use Whatsapp_
 	label values News_trust dummy
 
 	*Social media vs Traditional media
+	gen Reliable_source=0 if J3==1 | J3==2 | J3==4
+	replace Reliable_source=1 if J3==3
+	
+	label variable Reliable_source "Reliable source of Political information"
+	label define reliable_source 0 "Traditional Media" 1 "Social Media"
+	label values Reliable_source reliable_source
+	
+	*Active vs Passive social media users
+// Initialize Users variable
+	gen Users=1 if Facebook_use==1 | Facebook_use==2 | X_use==1 | X_use==2 | Instagram_use==1 | Instagram_use==2 | Whatsapp_use==1 | Whatsapp_use==2 | TikTok_use==1 | TikTok_use==2 |   YouTube_use==1 |   YouTube_use==2
+	
+	replace Users=0  if Facebook_use==3 | Facebook_use==4 | Facebook_use==5 | Facebook_use==6 | X_use==3 | X_use==4 | X_use==5 | X_use==6 | Instagram_use==3 | Instagram_use==4 | Instagram_use==5 | Instagram_use==6 | Whatsapp_use==3 | Whatsapp_use==4 | Whatsapp_use==5 | Whatsapp_use==6 | TikTok_use==3 | TikTok_use==4 | TikTok_use==5 | TikTok_use==6 | YouTube_use==3 | YouTube_use==4 | YouTube_use==5 | YouTube_use==6
+	
+label variable Users "Social Media Users for political information"
+label define user_l 0 "Passive Users" 1 "Active Users"
+label values Users user_l
+	
+*********************************	
+**** Changing voting Behaviour
+	tab VOTED2018
+	tab VOTE2024
+	tab s52
+	tab PARTY_VOTE 
+	
+	gen Voting_B = 1 if (VOTED2018==1 & VOTE2024==1) // yes , yes
+	replace Voting_B = 2 if (VOTED2018==0 & VOTE2024==1) // no , yes
+	replace Voting_B = 3 if (VOTED2018==1 & VOTE2024==0) // yes , no
+	replace Voting_B = 4 if (VOTED2018==0 & VOTE2024==0) // no, n0
+	
+	gen Party = 0 if s51==1 & PARTY_VOTE==1 | s51==2 & PARTY_VOTE==2 | s51==3 & PARTY_VOTE==3 | s51==4 & PARTY_VOTE==4 | s51==5 & PARTY_VOTE==5 | s51==6 & PARTY_VOTE==6 | s51==7 & PARTY_VOTE==7 | s51==8 & PARTY_VOTE==8 | s51==9 & PARTY_VOTE==9 | s51==10 & PARTY_VOTE==10 | s51==11 & PARTY_VOTE==11  | s51==12 & PARTY_VOTE==12 | s51==999 & PARTY_VOTE==999 // same party 
+	replace Party = 1 if s51==1 & PARTY_VOTE!=1 | s51==2 & PARTY_VOTE!=2 | s51==3 & PARTY_VOTE!=3 | s51==4 & PARTY_VOTE!=4 | s51==5 & PARTY_VOTE!=5 | s51==6 & PARTY_VOTE!=6 | s51==7 & PARTY_VOTE!=7 | s51==8 & PARTY_VOTE!=8 | s51==9 & PARTY_VOTE!=9 | s51==10 & PARTY_VOTE!=10 | s51==11 & PARTY_VOTE!=11  | s51==12 & PARTY_VOTE!=12 | s51==999 & PARTY_VOTE!=999 // changed party 
 	
 	
 	
+
 **************************************************
 *******Logistic Analyis
 **************************************************
