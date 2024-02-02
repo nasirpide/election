@@ -54,7 +54,7 @@ quietly{
 	replace AGE_CAT=3 if D0>30&D0<=40
 	replace AGE_CAT=4 if D0>40&D0!=.
 	label variable AGE_CAT "Age catagories"
-	label define age_cat 1 "New Entrant Youth" 2 "Youth" 3 "Mid Carear" 4 "Senior", replace
+	label define age_cat 1 "New Entrant Youth" 2 "Youth" 3 "Mid Career" 4 "Senior", replace
 	label values AGE_CAT age_cat
 	
 	gen EDU_CAT=1 if D5<=4
@@ -63,7 +63,7 @@ quietly{
 	replace EDU_CAT=4 if D5==8|D5==9
 	
 	label variable EDU_CAT "Education catagories"
-	label define edu_cat 1 "Matric or less" 2 "Secondary" 3 "Bechlor" 4 "Master/PhD", replace
+	label define edu_cat 1 "Metric or less" 2 "Secondary" 3 "Bechelor" 4 "Master/PhD", replace
 	label values EDU_CAT edu_cat
 
 	gen EMP_CAT=1 if D2==1|D2==2
@@ -71,7 +71,7 @@ quietly{
 	replace EMP_CAT=3 if D2==5
 	replace EMP_CAT=4 if EMP_CAT==.&D2!=.
 	label variable EMP_CAT "Employment catagories"
-	label define emp_cat 1 "Employeed" 2 "Business" 3 "Student" 4 "Labor/Others", replace
+	label define emp_cat 1 "Employed" 2 "Business" 3 "Student" 4 "Labor/Others", replace
 	label values EMP_CAT emp_cat
 	
 	genl REGION=(A3==1), label(Region 1: URBAN; 0 Rural)
@@ -630,6 +630,11 @@ esttab  using "$TAB/`CAT'.tex", replace style(tex) keep(SOCIAL_MEDIA)  substitut
 			label varlabels(_cons "Constant" SOCIAL_MEDIA "SM")
 eststo clear
 }
+
+	drop AGE1 AGE2 AGE3 AGE4 EDU1 EDU2 EDU3 EDU4 EMP1 EMP2 EMP3 EMP4
+
+
+
 
 
 
