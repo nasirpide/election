@@ -35,7 +35,7 @@ if $user == 2 {
 
 	
 *******packhages installed 
-
+/*
 	ssc install dataex, replace 
 	ssc install myaxis, replace
 	ssc install catplot, replace

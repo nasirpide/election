@@ -350,6 +350,7 @@ The post presents well-reasoned arguments and facts supporting their perspective
 	
 
 
+
 *********************************************************************************
 *********************************************************************************
 ******Empirical Analyis for Paper
@@ -635,13 +636,27 @@ eststo clear
 
 
 
-
-
-
 *********************************************************************************
 *********************************************************************************
 ******Descriptive analysis
 *********************************************************************************
+
+** Summary Table 
+	tab AGE_CAT, gen(AGE)
+	tab EDU_CAT, gen(EDU)
+	tab EMP_CAT, gen(EMP)
+	eststo: estpost sum AGE1 AGE2 AGE3 AGE4 EDU1 EDU2 EDU3 EDU4 EMP1 EMP2 EMP3 EMP4 VOTED2018 VOTE2024
+	eststo: estpost sum AGE1 AGE2 AGE3 AGE4 EDU1 EDU2 EDU3 EDU4 EMP1 EMP2 EMP3 EMP4 VOTED2018 VOTE2024  if SOCIAL_MEDIA==1
+	eststo: estpost sum AGE1 AGE2 AGE3 AGE4 EDU1 EDU2 EDU3 EDU4 EMP1 EMP2 EMP3 EMP4 VOTED2018 VOTE2024  if SOCIAL_MEDIA==0 
+	esttab using "$TAB/desc.tex", replace ///
+	mtitles("\textbf{\emph{Full Sample}}" "\textbf{\emph{Social Media User}}" "\textbf{\emph{Non User}}") ///
+	refcat(headroom "\textbf{\emph{Group 1}}" price "\textbf{\emph{Group 2}}", nolabel) ///
+	collabels(\multicolumn{1}{c}{{Mean}} \multicolumn{1}{c}{{Std.Dev.}} \multicolumn{1}{l}{{Obs}}) ///
+	cells("mean(fmt(2)) sd(fmt(2)) count(fmt(0))") label nonumber f noobs alignment(S) booktabs	
+	drop AGE1 AGE2 AGE3 AGE4 EDU1 EDU2 EDU3 EDU4 EMP1 EMP2 EMP3 EMP4
+eststo clear
+
+
 *********************************************************************************
 	*Use of social media for poltical information across age group 
 	preserve
@@ -654,7 +669,7 @@ eststo clear
 	label define vote_labels 0 "Not Intending to Vote" 1 "Intending to Vote", replace
 	label values VOTE2024 vote_labels
 
-		graph bar (mean) VOTE2024 VOTED2018 , over(AGE_CAT)
+	graph bar (mean) VOTE2024 VOTED2018 , over(AGE_CAT)
 
 *Voter Intentions Surge: A Comparative Analysis (2018 vs. 2024)
 	replace VOTE2024=VOTE2024*100
@@ -718,6 +733,9 @@ eststo clear
 
 /*
 	
+
+	Measuring political interest using survey data typically involves asking respondents a series of questions designed to gauge their level of engagement, attention, and involvement in political matters
+
 *! Do-file from 13Nov2020, Jan Helmdag
 
 sysuse auto
